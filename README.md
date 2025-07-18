@@ -1,7 +1,7 @@
 # GcodeEM
 The g-code editor for Mikhail
 
-## My and my neighbor's first factory assignment
+## My and my friend's first factory assignment
 
 ### Цель проекта:
 Создание приложения для автоматического редактирования созданных ранее программ на g-code
