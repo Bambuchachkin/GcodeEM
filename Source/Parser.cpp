@@ -4,6 +4,26 @@
 
 #include "Parser.h"
 #include <iostream>
+#define RESET   "\033[0m"
+#define GREEN   "\033[32m"
+#define RED     "\033[31m"
+
+Parser::Parser() {
+    /*Tasks["Standart_Numbers"] = false;
+    Tasks["Semicolon_Point"] = false;
+    Tasks["2"] = false;
+    Tasks["3"] = false;*/
+}
+
+Parser::~Parser() {}
+
+bool Parser::Number_or_not(char simbol) const {
+    if (int(simbol) >= int('0') && int(simbol) <= int('9')) {
+        return true;
+    }
+    return false;
+}
+
 
 bool Parser::Check_Format(std::string File_Name) const{
     if (File_Name.substr(File_Name.size()-4, File_Name.size()-1) == ".txt") {
@@ -12,39 +32,114 @@ bool Parser::Check_Format(std::string File_Name) const{
     throw "Choose a .txt file";
 }
 
+std::string Parser::Standart_Numbers(std::string Line) {
+    if (!Tasks["Standart_Numbers"]) return Line;
+    std::string New_Line = Line + ' '; // Во избидание выхода за границу
+    Why_not:
+        for (int i=0; i != New_Line.size(); i++) {
+            if (New_Line[i] == '.') {
+                if (!Number_or_not(New_Line[i-1])) {
+                    New_Line.insert(i, "0");
+                    goto Why_not;
+                }
+                if (!Number_or_not(New_Line[i+1])) {
+                    New_Line.insert(i+1, "0");
+                    goto Why_not;
+                }
+            }
+        }
+    New_Line.pop_back(); // Удаляем лишний пробел
+    return New_Line;
+}
+
+std::string Parser::Semicolon_Point(std::string Line) {
+    if (!Tasks["Semicolon_Point"]) return Line;
+    return Line+';';
+}
+
+std::string Parser::From_G1_to_G01(std::string Line) {
+    if (!Tasks["From_G1_to_G01"]) return Line;
+    int G_Pos = 0;
+    int Space_Pos = 0;
+
+    for (int i =0; i!= Line.size(); i++) {
+        if (Line[i] == 'G') {
+            G_Pos = i;
+            Space_Pos = i;
+            while (Line[Space_Pos]!=' ') {
+                Space_Pos++;
+            }
+            Last_G_Number = Line.substr(G_Pos+1,Space_Pos-G_Pos-1);
+
+            if (Last_G_Number.size() == 1) {
+                Last_G_Number.insert(0,"0");
+            }
+            // std::cout<<Last_G_Number<<'\n';
+
+            Line.replace(G_Pos+1, Space_Pos - G_Pos, Last_G_Number+' ');
+            return Line;
+        }
+    }
+    for (int i =0; i!= Line.size(); i++) {
+        if (Line[i] == ' ') {
+            Line.insert(i," G");
+            Line.insert(i+2, Last_G_Number);
+            return Line;
+        }
+    }
+    return Line;
+}
+
+
+
+void Parser::String_Analis(std::string Line) { // Добавить вариации преобразованиея через оператор switch в зависимости от выбора пользователя
+    std::cout<<GREEN;
+
+    std::string New_Line = Line;
+    New_Line = Standart_Numbers(New_Line);
+    New_Line = Semicolon_Point(New_Line);
+    New_Line = From_G1_to_G01(New_Line);
+
+    std::cout<<New_Line<<'\n';
+    outputFile << New_Line<<'\n';
+    std::cout<<RESET;
+}
+
+
 bool Parser::Work_File(std::string File_Name){
-    try {
-        Check_Format(File_Name); // В случае провала выбрасывает исключение
-    }
-    catch (const char* error_message) { // Перенести в window
-        std::cout<<error_message;
-        return false;
-    }
-    std::ifstream inputFile(File_Name);
-    if (inputFile.is_open()) {
+    Check_Format(File_Name);
+    inputFile.open(File_Name);
+    outputFile.open(File_Name.substr(0, File_Name.size()-4)+"_MODIFIED.txt");
+
+    if (inputFile.is_open() && outputFile.is_open()) {
         std::string line;
         while (std::getline(inputFile, line)) {
             if (!line.empty() && line.back() == '\r') { // Удаление команды для возврата каретки на windows
                 line.pop_back(); // Удаляем \r
             }
             if (line.size()) {
-                std::cout<<line<<'\n';
+                String_Analis(line);
+                std::cout<<line<<'\n'; // Убрать вывод в консоль
             }
         }
+        outputFile.close();
         inputFile.close();
         return true;
     }
-    throw "Can not open the file";
+    throw "Can not open or create the file";
 }
 
+bool Parser::Add_New_Task(std::string New_Task) {
+    Tasks[New_Task] = true;
+    return true;
+}
 
-bool Parser::Pars_File_from_to(std::string from_File_Name, std::string to_File_Name) {
-    try {
-        Work_File(from_File_Name);
-    }
-    catch (const char* error_message) { // Перенести в window
-        std::cout<<error_message;
-        return false;
-    }
+bool Parser::Delete_Task(std::string New_Task) {
+    Tasks[New_Task] = false;
+    return true;
+}
+
+bool Parser::Pars_File(std::string File_Name) {
+    Work_File(File_Name);
     return true;
 }
