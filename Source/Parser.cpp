@@ -8,12 +8,7 @@
 #define GREEN   "\033[32m"
 #define RED     "\033[31m"
 
-Parser::Parser() {
-    /*Tasks["Standart_Numbers"] = false;
-    Tasks["Semicolon_Point"] = false;
-    Tasks["2"] = false;
-    Tasks["3"] = false;*/
-}
+Parser::Parser() {}
 
 Parser::~Parser() {}
 
@@ -46,6 +41,11 @@ std::string Parser::Standart_Numbers(std::string Line) {
                     New_Line.insert(i+1, "0");
                     goto Why_not;
                 }
+            } else if (New_Line[i] == ' ' && i<New_Line.size()-1) {
+                if (New_Line[i+1] == ' ') {
+                    New_Line.erase(i+1, 1);
+                    goto Why_not;
+                }
             }
         }
     New_Line.pop_back(); // Удаляем лишний пробел
@@ -74,7 +74,6 @@ std::string Parser::From_G1_to_G01(std::string Line) {
             if (Last_G_Number.size() == 1) {
                 Last_G_Number.insert(0,"0");
             }
-            // std::cout<<Last_G_Number<<'\n';
 
             Line.replace(G_Pos+1, Space_Pos - G_Pos, Last_G_Number+' ');
             return Line;
@@ -124,6 +123,7 @@ bool Parser::Work_File(std::string File_Name){
         }
         outputFile.close();
         inputFile.close();
+        std::cout << "Новый файл сохранен по адресу: " << File_Name.substr(0,File_Name.size()-4)+"_MODIFIED.txt";
         return true;
     }
     throw "Can not open or create the file";
