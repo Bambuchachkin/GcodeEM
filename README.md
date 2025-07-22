@@ -58,5 +58,7 @@ The g-code editor for Mikhail
 
 ![Отрисовка карты.](/Images/Consol.png)
 
+#### Этап 4: Создание консольного приложения для Windows (GcodeEM.exe):
 
+![Отрисовка карты.](/Images/1stEXE.png)
 
