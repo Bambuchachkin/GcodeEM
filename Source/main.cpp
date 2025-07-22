@@ -4,7 +4,20 @@
 
 #include "Parser.h"
 
+#ifdef _WIN32
+#include <windows.h> // Для отображения русского текста в консоли виндовс
+#endif
+
 std::string Consol_start() {
+
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+#else
+    std::locale::global(std::locale("ru_RU.utf8"));
+    std::cout.imbue(std::locale());
+#endif
+
     std::cout << "Введите путь к преобразовываемому файлу: ";
     std::string file_name;
     std::cin >> file_name;
@@ -43,8 +56,12 @@ int main() {
         parser.Pars_File(File_name);
         // parser.Pars_File("/home/bambuchachkin/CLionProjects/GcodeEM_0/Tests/Boba.txt");
     } catch (const char* error_message) { // Перенести в window
-        std::cout<<error_message;
-        return false;
+        std::cout<<error_message<<'\n';
+        // return false;
     }
+
+    std::cout<<"Введите любой текст для завершения работы программы"<<'\n';
+    std::string end;
+    std::cin >> end;
     return 0;
 }
