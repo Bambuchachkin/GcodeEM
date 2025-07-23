@@ -91,6 +91,8 @@ std::string Parser::From_G1_to_G01(std::string Line) {
 }
 
 std::string Parser::The_Ending_Symbol(std::string Line) {
+    if (!Tasks["The_Ending_Symbol"] && Line.substr(0,4) == "END_") return "";
+    if (!Tasks["The_Ending_Symbol"]) return Line;
     if (Line.substr(0,4) == "END_") {
         std::cout<<YELLOW << "Введите желаемый символ окончания вашей программы: "<<RESET;
         std::string symbol;
