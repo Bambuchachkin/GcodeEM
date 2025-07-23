@@ -7,6 +7,7 @@
 #define RESET   "\033[0m"
 #define GREEN   "\033[32m"
 #define RED     "\033[31m"
+#define YELLOW  "\033[33m"
 
 Parser::Parser() {}
 
@@ -89,12 +90,21 @@ std::string Parser::From_G1_to_G01(std::string Line) {
     return Line;
 }
 
-
+std::string The_Ending_Symbol(std::string Line) {
+    if (Line == "END_0") {
+        std::cout<<YELLOW << "Введите желаемый символ окончания вашей программы: "<<RESET;
+        std::string symbol;
+        std::cin >> symbol;
+        return symbol;
+    }
+    return Line;
+}
 
 void Parser::String_Analis(std::string Line) { // Добавить вариации преобразованиея через оператор switch в зависимости от выбора пользователя
     std::cout<<GREEN;
 
     std::string New_Line = Line;
+    New_Line = The_Ending_Symbol(New_Line);
     New_Line = Standart_Numbers(New_Line);
     New_Line = Semicolon_Point(New_Line);
     New_Line = From_G1_to_G01(New_Line);
@@ -121,6 +131,7 @@ bool Parser::Work_File(std::string File_Name){
                 std::cout<<line<<'\n'; // Убрать вывод в консоль
             }
         }
+        String_Analis("END_0");
         outputFile.close();
         inputFile.close();
         std::cout << "Новый файл сохранен по адресу: " << File_Name.substr(0,File_Name.size()-4)+"_MODIFIED.txt";
