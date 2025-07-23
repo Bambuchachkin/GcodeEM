@@ -14,6 +14,13 @@
 #endif
 
 std::string Consol_start() {
+#ifdef _WIN32
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);//поддержка цветов
+    DWORD dwMode = 0;
+    GetConsoleMode(hOut, &dwMode);
+    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    SetConsoleMode(hOut, dwMode);
+#endif
 
 #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
