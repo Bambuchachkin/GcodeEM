@@ -26,6 +26,7 @@ class Parser {
     std::string Standart_Numbers(std::string Line);
     std::string Semicolon_Point(std::string Line);
     std::string From_G1_to_G01(std::string Line);
+    std::string The_Ending_Symbol(std::string Line);
 
 public:
     Parser();
