@@ -12,9 +12,9 @@ The g-code editor for Mikhail
 <tr>
 <td style="border: none;">
 
-1) При помощи средств виндовс создайте ярлык на рабочем столе, указавпуть к объекту ...\GcodeEM\Source\GcodeEM.exe
+1) При помощи средств виндовс создайте ярлык на рабочем столе, указавпуть к объекту `...\GcodeEM\Source\GcodeEM.exe`
 
-2) В свойствах ярдыка смените значек, указав путь ...\GcodeEM\Workpieces\Ico.ico
+2) В свойствах ярдыка смените значек, указав путь `...\GcodeEM\Workpieces\Ico.ico`
 ![Отрисовка карты.](/Images/Icones.png)
 
 </td> </tr> </table>
